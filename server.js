@@ -18,7 +18,6 @@ const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
 app.get('/oauth/callback', async (req, res) => {
   const { code } = req.query;
-  console.log(CLIENT_ID, CLIENT_SECRET)
   const response = await axios.post(
     'https://github.com/login/oauth/access_token',
     {
@@ -31,8 +30,6 @@ app.get('/oauth/callback', async (req, res) => {
     }
   );
   const token = response.data.access_token;
-  console.log("Token", token)
-  console.log("Data", response.data)
   
   res.render('callback', { token: token });
 });
