@@ -1,0 +1,25 @@
+{
+  "name": "GitHub Integration",
+  "capabilities": [
+    "card-badges",
+    "card-detail-badges",
+    "card-buttons",
+    "show-settings",
+    "authorization-status",
+    "attachment-sections"
+  ],
+  "authorization": {
+    "type": "oauth2",
+    "clientId": "YOUR_GITHUB_CLIENT_ID",
+    "scopes": ["repo", "read:user"],
+    "authorizationUrl": "https://github.com/login/oauth/authorize",
+    "tokenUrl": "https://github.com/login/oauth/access_token",
+    "keyExpires": "never"
+  },
+  "connectors": {
+    "members": {
+      "write": true,
+      "read": true
+    }
+  }
+}

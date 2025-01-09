@@ -1,0 +1,125 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.1/mustache.min.js"></script>
+    <style>
+      .attachment-item {
+        height: 30px;
+      }
+      .attachment-item img {
+        height: 14px;
+        margin-right: 8px;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+    </div>
+    <script>
+      var t = window.TrelloPowerUp.iframe();
+      
+      const ICONS = {
+        'pr-merged': 'https://cdn.jsdelivr.net/npm/@mdi/svg/svg/source-merge.svg',
+        'pr-open': 'https://cdn.jsdelivr.net/npm/@mdi/svg/svg/source-pull.svg',
+        'pr-closed': 'https://cdn.jsdelivr.net/npm/@mdi/svg/svg/close.svg',
+        'issue-open':  'https://cdn.jsdelivr.net/npm/@mdi/svg/svg/bug.svg',
+        'issue-closed':  'https://cdn.jsdelivr.net/npm/@mdi/svg/svg/shield-bug.svg',
+        'commit': 'https://cdn.jsdelivr.net/npm/@mdi/svg/svg/source-commit.svg',
+        'branch': 'https://cdn.jsdelivr.net/npm/@mdi/svg/svg/source-branch.svg',
+      }
+      const BLUE = '#CCE0FF';
+      const PURPLE = '#DFD8FD';
+      const RED = '#FFD5D2';
+      const GREEN = '#BAF3DB';
+      const COLORS = {
+        'pr-merged': PURPLE,
+        'pr-open': GREEN,
+        'pr-closed': RED,
+        'issue-open':  BLUE,
+        'issue-closed':  PURPLE,
+        'commit': BLUE,
+        'branch': BLUE,
+      }
+      
+      const fetchGitHubObject = async (url, token) => {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/vnd.github.v3+json',
+          },
+        });
+
+        if (!response.ok) {
+          console.error(`Error fetching GitHub object: ${response.status} ${response.statusText}`);
+          return null;
+        }
+
+        return response.json();
+      };
+      
+      const getStatus = (obj, url) => {
+        if (url.includes('/pulls/')) {
+          return obj.merged
+            ? 'pr-merged'
+            : obj.state === 'open'
+            ? 'pr-open'
+            : 'pr-closed';
+        } else if (url.includes('/issues/')) {
+          return `issue-${obj.state}`;
+        } else if (url.includes('/commits/')) {
+          return 'commit';
+        } else if (url.includes('/branches/')) {
+          return 'branch';
+        }
+      };
+      
+      const getLink = (obj, url, repo) => {
+        if (url.includes('/branches/')) {
+          return `https://github.com/${repo}/tree/${obj.name}`;
+        }
+        return obj.html_url;
+      }
+            
+      var arg = t.arg('arg');
+      t.render(async () => {
+        const token = await t.get('member', 'private', 'githubToken');
+        const repo = await t.get('board', 'private', 'githubRepo');
+        const container = document.getElementById('content');
+        container.innerHTML = '';
+        t.card('attachments')
+        .get('attachments')
+        .filter((attachment) => attachment.url.indexOf('https://api.github.com/') == 0)
+        .then(function(attachments) {
+          attachments.forEach(async (attachment) => {
+            const obj = await fetchGitHubObject(attachment.url, token);
+            const status = getStatus(obj, attachment.url);
+            const icon = ICONS[status];
+            const color = COLORS[status];
+            const href = getLink(obj, attachment.url, repo);
+
+            const item = document.createElement('div');
+            item.className = 'attachment-item';
+
+            const img = document.createElement('img');
+            img.src = icon;
+            img.style = `background: ${color};`
+
+            const link = document.createElement('a');
+            link.href = href;
+            link.target = '_blank';
+            link.textContent = attachment.name || obj.name;
+
+            item.appendChild(img);
+            item.appendChild(link);
+            container.appendChild(item);
+          });
+        })
+        .then(function(){
+          return t.sizeTo('#content');
+        });
+      });
+    </script>
+  </body>
+</html>
