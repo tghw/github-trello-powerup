@@ -2,7 +2,8 @@
 
 This is a powerup for Trello to replace the missing Github powerup.
 
-It is self hosted by [remixing this Glitch](https://glitch.com/edit/#!/remix/github-trello-powerup). I will not be providing support for it, but you can use it if you wish.
+It is self hosted by [remixing this Glitch](https://glitch.com/edit/#!/remix/github-trello-powerup).
+Issues and PRs can be filed to the [Github repo](https://github.com/tghw/github-trello-powerup)
 
 ## Getting Started
 
