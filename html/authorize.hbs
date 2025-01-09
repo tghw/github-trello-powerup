@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <title>Authorize GitHub</title>
+</head>
+<body>
+  <div>
+    <button id="authorize-button">Authorize with GitHub</button>
+  </div>
+
+  <script>
+    const t = TrelloPowerUp.iframe();
+    const CLIENT_ID = "{{githubClientId}}";
+
+    document.getElementById('authorize-button').addEventListener('click', () => {
+      const authUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo,user`;
+      window.open(authUrl, '_blank');
+    });
+    
+    // Listen for the token from the popup
+    window.addEventListener('message', async (event) => {
+      if (event.data.githubToken) {
+        const token = event.data.githubToken;
+
+        // Save the token to Trello's member storage
+        await t.set('member', 'private', 'githubToken', token);
+        alert('GitHub authorization successful!');
+        t.closePopup();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<html>
+  <body>
+    <script>
+      // Send the token back to the parent window
+      window.opener.postMessage({ githubToken: '{{ token }}' }, '*');
+      //window.close(); // Close the popup
+    </script>
+  </body>
+</html>

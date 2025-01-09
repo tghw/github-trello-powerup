@@ -1,0 +1,26 @@
+{
+  "name": "trello-githubhub-trello-powerup-backend",
+  "version": "0.1.0",
+  "description": "A simple Node app to provide the auth backend for a Github Trello Powerup",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "axios": "^1.7.9",
+    "express-handlebars": "^8.0.1"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/glitch-hello-node"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "glitch"
+  ]
+}

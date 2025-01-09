@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <title>GitHub Settings</title>
+</head>
+<body>
+  <div>
+    <label for="repo-input">GitHub Repository (owner/repo):</label>
+    <input type="text" id="repo-input" placeholder="e.g., octocat/Hello-World" />
+    <button id="save-repo">Save</button>
+  </div>
+
+  <script>
+    const t = TrelloPowerUp.iframe();
+
+    // Ensure DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', async () => {
+      const repo = await t.get('board', 'private', 'githubRepo');
+      document.getElementById('repo-input').value = repo || '';
+
+      document.getElementById('save-repo').addEventListener('click', async () => {
+        const repoValue = document.getElementById('repo-input').value.trim();
+        if (repoValue) {
+          await t.set('board', 'private', 'githubRepo', repoValue);
+          t.closePopup();
+        } else {
+          alert('Please enter a valid repository (e.g., owner/repo).');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
