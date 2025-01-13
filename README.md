@@ -20,6 +20,7 @@ Issues and PRs can be filed to the [Github repo](https://github.com/tghw/github-
     - Issues: Read-only
     - Metadata: Read-only
     - Pull Requests: Read-only
+- Optional features: Opt out of User-to-server token expiration (this is because token refresh is not yet implemented)
 
 3. Set the environment variables in your Glitch remix:
 

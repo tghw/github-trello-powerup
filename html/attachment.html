@@ -43,6 +43,38 @@
         'branch': BLUE,
       }
       
+      const linkToApi = (url) => {
+        const baseApiUrl = 'https://api.github.com/repos/';
+        const match = url.match(
+          /^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/(pull|issues|commit|tree)\/([^\/]+)/
+        );
+        if (!match) {
+          throw new Error('Invalid GitHub URL');
+        }
+        const [, owner, repo, objectType, objectId] = match;
+        const apiPaths = { pull: 'pulls', issues: 'issues', commit: 'commits', tree: 'branches'};
+        if (!apiPaths[objectType]) {
+          throw new Error(`Unsupported object type: ${objectType}`);
+        }
+        return `${baseApiUrl}${owner}/${repo}/${apiPaths[objectType]}/${objectId}`;
+      };
+
+      const apiToLink = (apiUrl) => {
+        const baseWebUrl = 'https://github.com/';
+        const match = apiUrl.match(
+          /^https:\/\/api\.github\.com\/repos\/([^\/]+)\/([^\/]+)\/(pulls|issues|commits|branches)\/([^\/]+)/
+        );
+        if (!match) {
+          throw new Error('Invalid GitHub API URL');
+        }
+        const [, owner, repo, objectType, objectId] = match;
+        const webPaths = { pulls: 'pull', issues: 'issues', commits: 'commit', branches: 'tree' };
+        if (!webPaths[objectType]) {
+          throw new Error(`Unsupported object type: ${objectType}`);
+        }
+        return `${baseWebUrl}${owner}/${repo}/${webPaths[objectType]}/${objectId}`;
+      };
+      
       const fetchGitHubObject = async (url, token) => {
         const response = await fetch(url, {
           headers: {
@@ -90,14 +122,15 @@
         container.innerHTML = '';
         t.card('attachments')
         .get('attachments')
-        .filter((attachment) => attachment.url.indexOf('https://api.github.com/') == 0)
+        .filter((attachment) => attachment.url.indexOf('https://github.com/') == 0)
         .then(function(attachments) {
           attachments.forEach(async (attachment) => {
-            const obj = await fetchGitHubObject(attachment.url, token);
-            const status = getStatus(obj, attachment.url);
+            const apiUrl = linkToApi(attachment.url);
+            const obj = await fetchGitHubObject(apiUrl, token);
+            const status = getStatus(obj, apiUrl);
             const icon = ICONS[status];
             const color = COLORS[status];
-            const href = getLink(obj, attachment.url, repo);
+            const href = attachment.url;
 
             const item = document.createElement('div');
             item.className = 'attachment-item';
