@@ -3,7 +3,9 @@
 This is a powerup for Trello to replace the missing Github powerup.
 
 It is self hosted by [remixing this Glitch](https://glitch.com/edit/#!/remix/github-trello-powerup).
-Issues and PRs can be filed to the [Github repo](https://github.com/tghw/github-trello-powerup)
+Issues and PRs can be filed to the [Github repo](https://github.com/tghw/github-trello-powerup).
+
+Do not point your Powerup at this Glitch. It will not be supported as a service, only as an open source project.
 
 ## Getting Started
 
@@ -20,6 +22,7 @@ Issues and PRs can be filed to the [Github repo](https://github.com/tghw/github-
     - Issues: Read-only
     - Metadata: Read-only
     - Pull Requests: Read-only
+- Optional features: Opt out of User-to-server token expiration (this is because token refresh is not yet implemented)
 
 3. Set the environment variables in your Glitch remix:
 
